@@ -1,7 +1,5 @@
 {
-  "functions": {
-    "api/token.js": {
-      "runtime": "node"
-    }
-  }
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }
