@@ -816,7 +816,9 @@
         if (selections.size) streams = streams.filter(s => matchesSize(s, selections.size));
 
         let vibeFiltered = selections.vibe ? streams.filter(s => matchesVibe(s, selections.vibe)) : streams;
-        if (vibeFiltered.length === 0) vibeFiltered = streams;
+        if (vibeFiltered.length < 3) {
+            vibeFiltered = [...vibeFiltered, ...streams.filter(s => !vibeFiltered.includes(s))];
+        }
 
         vibeFiltered.sort(() => Math.random() - 0.5);
         const picks = vibeFiltered.slice(0, 5);
