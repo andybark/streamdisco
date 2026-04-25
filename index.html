@@ -43,6 +43,48 @@
       background-size: 200px 200px;
     }
 
+    /* ── Nav ── */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s, background 0.3s, backdrop-filter 0.3s;
+    }
+
+    .nav.scrolled {
+      background: oklch(7% 0.04 278 / 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-color: var(--border);
+    }
+
+    .nav-wordmark {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-wordmark-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
     /* ── Glow behind hero ── */
     .glow-bg {
       position: fixed;
@@ -505,15 +547,22 @@
 </head>
 <body>
 
+  <nav class="nav" id="nav">
+    <a class="nav-wordmark" href="#">
+      <span class="nav-wordmark-dot"></span>
+      StreamDisco
+    </a>
+  </nav>
+
   <div class="glow-bg"></div>
 
-  <div class="wrap">
+  <div class="wrap" style="padding-top: 140px;">
 
     <!-- Hero -->
     <header class="hero">
       <div class="hero-eyebrow">
         <span></span>
-        Twitch Discovery
+        StreamDisco
       </div>
       <h1>Find your<br><em>perfect stream.</em></h1>
       <p>Tell us your vibe. We'll find someone worth watching.</p>
@@ -650,6 +699,12 @@
 
     let CLIENT_ID = null;
     let ACCESS_TOKEN = null;
+
+    // Nav scroll effect
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 20);
+    });
 
     async function loadConfig() {
       try {
