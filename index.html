@@ -301,24 +301,19 @@
   </div>
 
   <script>
-    const configRes = await fetch('/api/token');
-    const config = await configRes.json();
-    const CLIENT_ID = config.clientId;
-    const ACCESS_TOKEN = config.accessToken;
-
     const selections = { vibe: null, size: null };
 
     let CLIENT_ID = null;
     let ACCESS_TOKEN = null;
 
     async function loadConfig() {
-        const configRes = await fetch('/api/token');
-        const config = await configRes.json();
-        CLIENT_ID = config.clientId;
-        ACCESS_TOKEN = config.accessToken;
-}
+      const configRes = await fetch('/api/token');
+      const config = await configRes.json();
+      CLIENT_ID = config.clientId;
+      ACCESS_TOKEN = config.accessToken;
+    }
 
-loadConfig();
+    loadConfig();
 
     const vibeKeywords = {
       chill: ['chill','cozy','relaxed','lofi','calm','casual','vibing','cosy','mellow'],
@@ -363,7 +358,6 @@ loadConfig();
     }
 
     async function findStreams() {
-
       const resultsEl = document.getElementById('results');
       resultsEl.innerHTML = '<p class="no-results">Finding your perfect stream...</p>';
 
@@ -383,7 +377,7 @@ loadConfig();
       }
 
       if (!gameId && (selections.size === 'small' || selections.size === 'medium')) {
-        resultsEl.innerHTML = '<p class="no-results">For small and medium communities, try searching a specific game — it helps us find the right streamers for you!</p>';
+        resultsEl.innerHTML = '<p class="no-results">For small and medium communities, try searching a specific game — it helps us find the right streamers for you! 🎮</p>';
         return;
       }
 
@@ -397,19 +391,16 @@ loadConfig();
       const streamsData = await streamsRes.json();
       let streams = streamsData.data;
 
-      // Filter by size
       if (selections.size) {
         streams = streams.filter(s => matchesSize(s, selections.size));
       }
 
-      // Filter by vibe then fall back to unfiltered if nothing matches
       let vibeFiltered = selections.vibe
         ? streams.filter(s => matchesVibe(s, selections.vibe))
         : streams;
 
       if (vibeFiltered.length === 0) vibeFiltered = streams;
 
-      // Shuffle and pick 5
       vibeFiltered.sort(() => Math.random() - 0.5);
       const picks = vibeFiltered.slice(0, 5);
 
