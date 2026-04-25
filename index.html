@@ -308,6 +308,18 @@
 
     const selections = { vibe: null, size: null };
 
+    let CLIENT_ID = null;
+    let ACCESS_TOKEN = null;
+
+    async function loadConfig() {
+        const configRes = await fetch('/api/token');
+        const config = await configRes.json();
+        CLIENT_ID = config.clientId;
+        ACCESS_TOKEN = config.accessToken;
+}
+
+loadConfig();
+
     const vibeKeywords = {
       chill: ['chill','cozy','relaxed','lofi','calm','casual','vibing','cosy','mellow'],
       hype: ['ranked','grind','hype','competitive','tryhard','clutch','intense','tournament','ladder'],
@@ -351,10 +363,7 @@
     }
 
     async function findStreams() {
-      const configRes = await fetch('/api/token');
-      const config = await configRes.json();
-      const CLIENT_ID = config.clientId;
-      const ACCESS_TOKEN = config.accessToken;
+
       const resultsEl = document.getElementById('results');
       resultsEl.innerHTML = '<p class="no-results">Finding your perfect stream...</p>';
 
