@@ -301,8 +301,10 @@
   </div>
 
   <script>
-    const CLIENT_ID = 'acginim04qed0irhwy8ekyw7b6wypm';
-    const ACCESS_TOKEN = 'nl8b8d02qlkreyjgu9wh73pjf52edr';
+    const configRes = await fetch('/api/token');
+    const config = await configRes.json();
+    const CLIENT_ID = config.clientId;
+    const ACCESS_TOKEN = config.accessToken;
 
     const selections = { vibe: null, size: null };
 
@@ -349,6 +351,10 @@
     }
 
     async function findStreams() {
+      const configRes = await fetch('/api/token');
+      const config = await configRes.json();
+      const CLIENT_ID = config.clientId;
+      const ACCESS_TOKEN = config.accessToken;
       const resultsEl = document.getElementById('results');
       resultsEl.innerHTML = '<p class="no-results">Finding your perfect stream...</p>';
 
