@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StreamDisco</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0e0e10;
+      color: #efeff1;
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      padding: 60px 20px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      font-weight: 800;
+      background: linear-gradient(90deg, #9147ff, #ff6bcb);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: #adadb8;
+    }
+
+    /* Steps */
+    .step {
+      margin-bottom: 40px;
+    }
+
+    .step-label {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #9147ff;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .step h2 {
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+
+    /* Option buttons */
+    .options {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .option {
+      flex: 1;
+      min-width: 140px;
+      background: #18181b;
+      border: 2px solid #26262c;
+      border-radius: 12px;
+      padding: 20px 16px;
+      cursor: pointer;
+      text-align: center;
+      transition: all .2s;
+    }
+
+    .option:hover {
+      border-color: #9147ff;
+    }
+
+    .option.selected {
+      border-color: #9147ff;
+      background: #1f1035;
+    }
+
+    .option .emoji {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .option .label {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .option .desc {
+      font-size: 12px;
+      color: #adadb8;
+    }
+
+    /* Game search */
+    .game-input {
+      width: 100%;
+      background: #18181b;
+      border: 2px solid #26262c;
+      border-radius: 12px;
+      padding: 16px 20px;
+      color: #efeff1;
+      font-size: 15px;
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    .game-input:focus {
+      border-color: #9147ff;
+    }
+
+    .game-input::placeholder {
+      color: #545458;
+    }
+
+    /* Find button */
+    .find-btn {
+      width: 100%;
+      background: linear-gradient(90deg, #9147ff, #ff6bcb);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 18px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 40px;
+      transition: opacity .2s;
+    }
+
+    .find-btn:hover { opacity: 0.9; }
+    .find-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Results */
+    .results { margin-top: 60px; }
+
+    .results h2 {
+      font-size: 22px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .card {
+      background: #18181b;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      display: flex;
+      text-decoration: none;
+      color: inherit;
+      border: 2px solid transparent;
+      transition: border-color .2s;
+    }
+
+    .card:hover { border-color: #9147ff; }
+
+    .card img {
+      width: 180px;
+      min-width: 180px;
+      object-fit: cover;
+    }
+
+    .card-info {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .card-info h3 { font-size: 17px; }
+
+    .card-info .meta {
+      font-size: 13px;
+      color: #adadb8;
+    }
+
+    .card-info .title {
+      font-size: 13px;
+      color: #efeff1;
+      opacity: 0.7;
+    }
+
+    .tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: #26262c;
+      color: #adadb8;
+    }
+
+    .tag.vibe { background: #1f1035; color: #9147ff; }
+
+    .watch-btn {
+      margin-top: 8px;
+      display: inline-block;
+      background: #9147ff;
+      color: white;
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      width: fit-content;
+    }
+
+    .no-results {
+      text-align: center;
+      color: #adadb8;
+      font-size: 15px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Hero -->
+    <div class="hero">
+      <h1>StreamDisco 🎮</h1>
+      <p>Find your next favorite streamer.</p>
+    </div>
+
+    <!-- Step 1: Vibe -->
+    <div class="step">
+      <div class="step-label">Step 1</div>
+      <h2>What's your vibe tonight?</h2>
+      <div class="options">
+        <div class="option" onclick="selectOption('vibe', 'chill', this)">
+          <div class="emoji">😌</div>
+          <div class="label">Chill</div>
+          <div class="desc">Relaxed, cozy, low energy</div>
+        </div>
+        <div class="option" onclick="selectOption('vibe', 'hype', this)">
+          <div class="emoji">🔥</div>
+          <div class="label">Hype</div>
+          <div class="desc">Competitive, exciting, high energy</div>
+        </div>
+        <div class="option" onclick="selectOption('vibe', 'educational', this)">
+          <div class="emoji">🧠</div>
+          <div class="label">Educational</div>
+          <div class="desc">Learn something, improve your game</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Size -->
+    <div class="step">
+      <div class="step-label">Step 2</div>
+      <h2>What size community?</h2>
+      <div class="options">
+        <div class="option" onclick="selectOption('size', 'small', this)">
+          <div class="emoji">🌱</div>
+          <div class="label">Small</div>
+          <div class="desc">Under 500 viewers, tight-knit chat</div>
+        </div>
+        <div class="option" onclick="selectOption('size', 'medium', this)">
+          <div class="emoji">🌿</div>
+          <div class="label">Medium</div>
+          <div class="desc">500–5k viewers, active community</div>
+        </div>
+        <div class="option" onclick="selectOption('size', 'large', this)">
+          <div class="emoji">🌳</div>
+          <div class="label">Large</div>
+          <div class="desc">5k+ viewers, big production</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Game -->
+    <div class="step">
+      <div class="step-label">Step 3</div>
+      <h2>Any game in mind?</h2>
+      <input class="game-input" id="gameInput" type="text" placeholder="e.g. Valorant, Minecraft, Just Chatting...">
+    </div>
+
+    <!-- Find Button -->
+    <button class="find-btn" onclick="findStreams()">Find My Stream 🎯</button>
+
+    <!-- Results -->
+    <div class="results" id="results"></div>
+
+  </div>
+
+  <script>
+    const CLIENT_ID = 'acginim04qed0irhwy8ekyw7b6wypm';
+    const ACCESS_TOKEN = 'nl8b8d02qlkreyjgu9wh73pjf52edr';
+
+    const selections = { vibe: null, size: null };
+
+    const vibeKeywords = {
+      chill: ['chill','cozy','relaxed','lofi','calm','casual','vibing','cosy','mellow'],
+      hype: ['ranked','grind','hype','competitive','tryhard','clutch','intense','tournament','ladder'],
+      educational: ['tutorial','guide','learning','how to','educational','teaching','coaching','tips','beginner']
+    };
+
+    const sizeRanges = {
+      small:  { min: 0,    max: 500  },
+      medium: { min: 500,  max: 5000 },
+      large:  { min: 5000, max: Infinity }
+    };
+
+    function selectOption(type, value, el) {
+      document.querySelectorAll(`.option`).forEach(o => {
+        if (o.onclick && o.onclick.toString().includes(`'${type}'`)) {
+          o.classList.remove('selected');
+        }
+      });
+      el.classList.add('selected');
+      selections[type] = value;
+    }
+
+    function matchesVibe(stream, vibe) {
+      if (!vibe) return true;
+      const text = (stream.title + ' ' + (stream.tags || []).join(' ')).toLowerCase();
+      return vibeKeywords[vibe].some(k => text.includes(k));
+    }
+
+    function matchesSize(stream, size) {
+      if (!size) return true;
+      const { min, max } = sizeRanges[size];
+      return stream.viewer_count >= min && stream.viewer_count < max;
+    }
+
+    function getVibeLabel(stream) {
+      const text = (stream.title + ' ' + (stream.tags || []).join(' ')).toLowerCase();
+      for (const [vibe, keywords] of Object.entries(vibeKeywords)) {
+        if (keywords.some(k => text.includes(k))) return vibe;
+      }
+      return null;
+    }
+
+    async function findStreams() {
+      const resultsEl = document.getElementById('results');
+      resultsEl.innerHTML = '<p class="no-results">Finding your perfect stream...</p>';
+
+      const gameName = document.getElementById('gameInput').value.trim();
+      let gameId = null;
+
+      if (gameName) {
+        const gameRes = await fetch(`https://api.twitch.tv/helix/games?name=${encodeURIComponent(gameName)}`, {
+          headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${ACCESS_TOKEN}` }
+        });
+        const gameData = await gameRes.json();
+        gameId = gameData.data[0]?.id;
+        if (!gameId) {
+          resultsEl.innerHTML = '<p class="no-results">Game not found. Try a different name.</p>';
+          return;
+        }
+      }
+
+      if (!gameId && (selections.size === 'small' || selections.size === 'medium')) {
+        resultsEl.innerHTML = '<p class="no-results">For small and medium communities, try searching a specific game — it helps us find the right streamers for you!</p>';
+        return;
+      }
+
+      const url = gameId
+        ? `https://api.twitch.tv/helix/streams?game_id=${gameId}&first=100`
+        : `https://api.twitch.tv/helix/streams?first=100`;
+
+      const streamsRes = await fetch(url, {
+        headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${ACCESS_TOKEN}` }
+      });
+      const streamsData = await streamsRes.json();
+      let streams = streamsData.data;
+
+      // Filter by size
+      if (selections.size) {
+        streams = streams.filter(s => matchesSize(s, selections.size));
+      }
+
+      // Filter by vibe then fall back to unfiltered if nothing matches
+      let vibeFiltered = selections.vibe
+        ? streams.filter(s => matchesVibe(s, selections.vibe))
+        : streams;
+
+      if (vibeFiltered.length === 0) vibeFiltered = streams;
+
+      // Shuffle and pick 5
+      vibeFiltered.sort(() => Math.random() - 0.5);
+      const picks = vibeFiltered.slice(0, 5);
+
+      if (picks.length === 0) {
+        resultsEl.innerHTML = '<p class="no-results">No streams found. Try different filters!</p>';
+        return;
+      }
+
+      resultsEl.innerHTML = `<h2>✨ Your matches</h2>` + picks.map(stream => {
+        const thumb = stream.thumbnail_url.replace('{width}', '180').replace('{height}', '101');
+        const vibeLabel = getVibeLabel(stream);
+        return `
+          <a class="card" href="https://twitch.tv/${stream.user_name}" target="_blank">
+            <img src="${thumb}" alt="${stream.user_name}">
+            <div class="card-info">
+              <h3>${stream.user_name}</h3>
+              <div class="meta">${stream.game_name} • ${stream.viewer_count.toLocaleString()} viewers</div>
+              <div class="title">${stream.title}</div>
+              <div class="tags">
+                ${vibeLabel ? `<span class="tag vibe">${vibeLabel}</span>` : ''}
+                <span class="tag">${stream.viewer_count < 500 ? 'small community' : stream.viewer_count < 5000 ? 'medium community' : 'large community'}</span>
+              </div>
+              <span class="watch-btn">Watch Now →</span>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+  </script>
+</body>
+</html>
