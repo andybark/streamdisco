@@ -676,12 +676,31 @@
     <div class="section">
       <div class="section-q">Any game in mind? <span style="color:var(--muted);font-weight:300;font-family:'DM Sans',sans-serif;font-size:15px;">(optional)</span></div>
       <div class="input-wrap">
-        <svg class="input-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="8" cy="8" r="5.5"/>
-          <path d="M13 13 L16.5 16.5"/>
-        </svg>
-        <input class="game-input" id="gameInput" type="text" placeholder="Valorant, Minecraft, Just Chatting…">
-      </div>
+  <input 
+    class="game-input" 
+    id="gameInput" 
+    type="text" 
+    placeholder="Search or pick a game..."
+    autocomplete="off"
+    oninput="filterGames(this.value)"
+    onfocus="showDropdown()"
+  >
+  <div id="gameDropdown" style="
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-top: 6px;
+    overflow: hidden;
+    z-index: 99;
+    max-height: 260px;
+    overflow-y: auto;
+  "></div>
+</div>
       <div class="input-hint">Leave blank to search across all games</div>
     </div>
 
@@ -713,14 +732,71 @@
     });
 
     async function loadConfig() {
-      try {
         const configRes = await fetch('/api/token');
         const config = await configRes.json();
         CLIENT_ID = config.clientId;
         ACCESS_TOKEN = config.accessToken;
-      } catch(e) {}
+        await loadTopGames();
     }
+
     loadConfig();
+    let topGames = [];
+
+    async function loadTopGames() {
+    const res = await fetch('https://api.twitch.tv/helix/games/top?first=20', {
+        headers: { 'Client-ID': CLIENT_ID, 'Authorization': `Bearer ${ACCESS_TOKEN}` }
+    });
+    const data = await res.json();
+    topGames = data.data.map(g => g.name);
+    renderDropdown(topGames);
+    }
+
+    function renderDropdown(games) {
+    const dropdown = document.getElementById('gameDropdown');
+    if (games.length === 0) {
+        dropdown.innerHTML = `<div style="padding:12px 16px;color:var(--muted);font-size:13px;">No games found</div>`;
+        return;
+    }
+    dropdown.innerHTML = games.map(game => `
+        <div onclick="selectGame('${game.replace(/'/g, "\\'")}')" style="
+        padding: 12px 16px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background 0.15s;
+        border-bottom: 1px solid var(--border);
+        "
+        onmouseover="this.style.background='var(--surface)'"
+        onmouseout="this.style.background='transparent'"
+        >${game}</div>
+    `).join('');
+    }
+
+    function filterGames(query) {
+    showDropdown();
+    if (!query.trim()) {
+        renderDropdown(topGames);
+        return;
+    }
+    const filtered = topGames.filter(g => 
+        g.toLowerCase().includes(query.toLowerCase())
+    );
+    renderDropdown(filtered);
+    }
+
+    function showDropdown() {
+    document.getElementById('gameDropdown').style.display = 'block';
+    }
+
+    function hideDropdown() {
+    setTimeout(() => {
+        document.getElementById('gameDropdown').style.display = 'none';
+    }, 150);
+    }
+
+    function selectGame(name) {
+    document.getElementById('gameInput').value = name;
+    document.getElementById('gameDropdown').style.display = 'none';
+    }
 
     const vibeKeywords = {
       chill: ['chill','cozy','relaxed','lofi','calm','casual','vibing','cosy','mellow','chill stream','laid back','laid-back','slow','peaceful','soft','quiet','background','sleepy','night stream','late night','hangout','just chatting','variety','no stress','easy','comfy'],
